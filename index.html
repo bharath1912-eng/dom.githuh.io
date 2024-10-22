@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Array Items and Buttons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #ffffff;
+        }
+        label {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .input-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+       
+        button {
+            cursor: pointer;
+        }
+        .value-container {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+        .value-item {
+            padding: 5px;
+            
+            background-color: #e0e0e0;
+            border: 1px solid black;
+            width: 50px;
+            text-align: center;
+        }
+        .highlight {
+            background-color: green;
+            color: white;
+        }
+        .found {
+            background-color: yellow;
+        }
+        .delete-highlight {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="input-container">
+        <label>Enter Array Item:</label>
+        <input type="text" id="inputValue" placeholder="Enter a value">
+        <button onclick="insertValue()">Insert</button>
+        <button onclick="deleteValue()">Delete</button>
+        <button onclick="findValue()">Find</button>
+        <button onclick="printValues()">Print</button>
+    </div>
+
+    <div class="value-container" id="valueContainer"></div>
+
+    <script>
+        function insertValue() {
+            const input = document.getElementById("inputValue").value;
+            const valueContainer = document.getElementById("valueContainer");
+
+            if (input) {
+                const newItem = document.createElement("div");
+                newItem.className = "value-item highlight";
+                newItem.textContent = input;
+
+                // Remove highlight from previous items
+                const items = valueContainer.getElementsByClassName("value-item");
+                for (let item of items) {
+                    item.classList.remove("highlight");
+                }
+
+                // Add new item to the container
+                valueContainer.appendChild(newItem);
+                alert("Value Inserted");
+                document.getElementById("inputValue").value = ""; // Clear the input field
+            } else {
+                alert("Enter the value");
+            }
+        }
+
+        function deleteValue() {
+            const input = document.getElementById("inputValue").value;
+            const valueContainer = document.getElementById("valueContainer");
+
+            if (input) {
+                const items = valueContainer.getElementsByClassName("value-item");
+                let found = false;
+
+                // Iterate over the items to find and remove the matching value
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].textContent === input) {
+                        found = true;
+                        items[i].classList.add("delete-highlight"); // Highlight in red
+
+                        // Create a message overlay
+                        const msgOverlay = document.createElement("div");
+                        msgOverlay.className = "deleting-msg";
+                        msgOverlay.textContent = "Deleting...";
+                        items[i].appendChild(msgOverlay);
+
+                        // Wait for 500ms before removing the item
+                        setTimeout(() => {
+                            valueContainer.removeChild(items[i]);
+                            alert("Item deleted");
+                        }, 500);
+
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    alert("Item not found");
+                }
+
+                document.getElementById("inputValue").value = ""; // Clear the input field
+            } else {
+                alert("Enter the value to delete");
+            }
+        }
+
+        
+            
+
+        function findValue() {
+            const input = document.getElementById("inputValue").value;
+            const items = document.getElementsByClassName("value-item");
+
+            let found = false;
+            for (let item of items) {
+                // Remove previous found highlights
+                item.classList.remove("found");
+
+                if (item.textContent === input) {
+                    item.classList.add("found");
+                    found = true;
+                }
+            }
+
+            if (found) {
+                alert("Item found and highlighted in yellow");
+            } else {
+                alert("Item not found");
+            }
+        }
+
+        function printValues() {
+            const items = document.getElementsByClassName("value-item");
+
+            // Remove all highlight classes from items
+            for (let item of items) {
+                item.classList.remove("highlight", "found", "delete-highlight");
+            }
+
+            const values = [];
+            for (let item of items) {
+                values.push(item.textContent);
+            }
+
+            console.log("Current values:", values);
+            alert("Values printed to console");
+        }
+    </script>
+</body>
+</html>
